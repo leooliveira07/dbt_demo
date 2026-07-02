@@ -32,8 +32,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   dbt_demo:
     +materialized: view
-    example:
-      +schema: bronze
     staging:
       +materialized: view
       +schema: bronze

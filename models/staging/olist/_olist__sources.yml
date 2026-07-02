@@ -1,0 +1,26 @@
+version: 2
+
+sources:
+  - name: olist_raw
+    database: leo
+    schema: raw
+    description: "Dados brutos do dataset Olist, carregados via upload manual no Volume e materializados como tabelas raw."
+    tables:
+      - name: orders
+        description: "Pedidos realizados na plataforma Olist."
+      - name: order_items
+        description: "Itens de cada pedido, incluindo produto, vendedor, preço e frete."
+      - name: products
+        description: "Catálogo de produtos vendidos na plataforma."
+      - name: sellers
+        description: "Vendedores cadastrados na plataforma."
+      - name: customers
+        description: "Clientes que realizaram pedidos."
+      - name: geolocation
+        description: "Coordenadas geográficas associadas a CEPs brasileiros."
+      - name: payments
+        description: "Pagamentos realizados por pedido, incluindo forma de pagamento e parcelas."
+      - name: reviews
+        description: "Avaliações de pedidos feitas pelos clientes."
+      - name: product_category_name_translation
+        description: "Tradução dos nomes de categoria de produto (português para inglês)."
