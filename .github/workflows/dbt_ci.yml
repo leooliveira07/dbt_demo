@@ -1,0 +1,54 @@
+name: dbt CI/CD
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  dbt-build:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      DATABRICKS_CATALOG: ${{ secrets.DATABRICKS_CATALOG }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dbt
+        run: |
+          pip install --upgrade pip
+          pip install dbt-core dbt-databricks
+
+      - name: Copy profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat << 'PROFILE' > ~/.dbt/profiles.yml
+          dbt_demo:
+            target: ci
+            outputs:
+              ci:
+                type: databricks
+                catalog: "{{ env_var('DATABRICKS_CATALOG') }}"
+                schema: ci
+                host: "{{ env_var('DATABRICKS_HOST') }}"
+                http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
+                token: "{{ env_var('DATABRICKS_TOKEN') }}"
+                threads: 4
+          PROFILE
+
+      - name: dbt debug
+        run: dbt debug
+
+      - name: dbt build
+        run: dbt build
