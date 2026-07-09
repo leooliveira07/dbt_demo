@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Dimensão de clientes, com localização geográfica resolvida a partir do CEP."
+    columns:
+      - name: customer_id
+        description: "Chave primária da dimensão. Identifica um cliente em um pedido específico."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_products
+    description: "Dimensão de produtos, com categoria traduzida para inglês."
+    columns:
+      - name: product_id
+        description: "Chave primária da dimensão."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_sellers
+    description: "Dimensão de vendedores."
+    columns:
+      - name: seller_id
+        description: "Chave primária da dimensão."
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_orders
+    description: "Tabela fato no grão de item de pedido. Uma linha por item dentro de um pedido, com métricas de valor, entrega, pagamento e review."
+    columns:
+      - name: order_id
+        description: "Identificador do pedido ao qual o item pertence."
+        tests:
+          - not_null
+      - name: order_item_id
+        description: "Identificador do item dentro do pedido."
+        tests:
+          - not_null
+      - name: product_id
+        description: "Chave estrangeira para dim_products."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+      - name: seller_id
+        description: "Chave estrangeira para dim_sellers."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_sellers')
+              field: seller_id
+      - name: customer_id
+        description: "Chave estrangeira para dim_customers."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: item_price
+        description: "Preço do item, sem frete."
+        tests:
+          - not_null
+      - name: sentiment
+        description: "Classificação de sentimento derivada da review, quando existente."
+        tests:
+          - accepted_values:
+              values: ['positive', 'neutral', 'negative']
+              config:
+                where: "sentiment is not null"
