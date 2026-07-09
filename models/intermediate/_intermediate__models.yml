@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: int_orders_enriched
+    description: "Pedidos enriquecidos com métricas agregadas de itens (quantidade, valor total, frete) e indicadores de prazo de entrega."
+    columns:
+      - name: order_id
+        description: "Identificador único do pedido."
+        tests:
+          - unique
+          - not_null
+      - name: item_count
+        description: "Quantidade de itens no pedido."
+      - name: order_total_value
+        description: "Valor total do pedido (itens + frete)."
+      - name: delivery_days
+        description: "Dias entre a compra e a entrega efetiva ao cliente."
+      - name: delivery_days_vs_estimate
+        description: "Diferença em dias entre a entrega efetiva e a data estimada. Valores negativos indicam atraso."
+
+  - name: int_order_payments_summary
+    description: "Pagamentos agregados por pedido, com forma de pagamento predominante e total pago."
+    columns:
+      - name: order_id
+        description: "Identificador único do pedido."
+        tests:
+          - unique
+          - not_null
+      - name: total_paid
+        description: "Soma de todos os valores pagos para este pedido."
+        tests:
+          - not_null
+      - name: predominant_payment_type
+        description: "Forma de pagamento de maior valor associada ao pedido."
+
+  - name: int_customers_location
+    description: "Clientes enriquecidos com coordenadas geográficas médias do seu prefixo de CEP."
+    columns:
+      - name: customer_id
+        description: "Identificador do cliente associado a um pedido específico."
+        tests:
+          - unique
+          - not_null
+      - name: customer_lat
+        description: "Latitude média associada ao prefixo de CEP do cliente."
+      - name: customer_lng
+        description: "Longitude média associada ao prefixo de CEP do cliente."
+
+  - name: int_reviews_enriched
+    description: "Reviews enriquecidas com tempo de resposta e classificação de sentimento derivada da nota."
+    columns:
+      - name: review_id
+        description: "Identificador único da avaliação."
+        tests:
+          - not_null
+      - name: order_id
+        description: "Identificador do pedido avaliado."
+        tests:
+          - not_null
+      - name: sentiment
+        description: "Classificação derivada do review_score: positive (4-5), neutral (3), negative (1-2)."
+        tests:
+          - accepted_values:
+              values: ['positive', 'neutral', 'negative']
