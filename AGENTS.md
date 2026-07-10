@@ -24,5 +24,5 @@ Dataset Olist (Kaggle), estático. Databricks Free Edition, Unity Catalog. Grão
 
 ## Pendente (não assumir que já existe)
 
-- Snapshots / SCD2 — ainda não implementado
+- Snapshots existem (`snap_sellers`), mas o CI só roda `dbt build` em push/PR — não há trigger agendado (`schedule`) rodando `dbt snapshot` periodicamente. Isso significa que mudanças na fonte entre um push e outro **não são capturadas** no histórico. Não tratar o snapshot atual como um histórico confiável até esse gap ser resolvido.
 - Incremental models — todos os models são full-refresh (`view` ou `table`)
