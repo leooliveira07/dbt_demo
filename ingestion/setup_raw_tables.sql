@@ -52,11 +52,13 @@ SELECT * FROM read_files(
   header => true
 );
 
-CREATE TABLE leo.raw.reviews AS
+CREATE OR REPLACE TABLE leo_dev.raw.reviews AS
 SELECT * FROM read_files(
   '/Volumes/leo/raw/olist_files/olist_order_reviews_dataset.csv',
   format => 'csv',
-  header => true
+  header => true,
+  multiLine => true,
+  escape => '"'
 );
 
 CREATE TABLE leo.raw.product_category_name_translation AS
