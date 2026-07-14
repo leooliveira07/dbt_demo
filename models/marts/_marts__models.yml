@@ -68,6 +68,7 @@ models:
         description: "Classificação de sentimento derivada da review, quando existente."
         tests:
           - accepted_values:
-              values: ['positive', 'neutral', 'negative']
+              arguments:
+                values: ['positive', 'neutral', 'negative']
               config:
                 where: "sentiment is not null"

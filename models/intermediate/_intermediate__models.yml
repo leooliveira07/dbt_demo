@@ -61,4 +61,5 @@ models:
         description: "Classificação derivada do review_score: positive (4-5), neutral (3), negative (1-2)."
         tests:
           - accepted_values:
-              values: ['positive', 'neutral', 'negative']
+              arguments:
+                values: ['positive', 'neutral', 'negative']
