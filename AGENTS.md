@@ -24,5 +24,5 @@ Dataset Olist (Kaggle), estático. Databricks Free Edition, Unity Catalog. Grão
 
 ## Pendente (não assumir que já existe)
 
-- Snapshots existem (`snap_sellers`), mas o CI só roda `dbt build` em push/PR — não há trigger agendado (`schedule`) rodando `dbt snapshot` periodicamente. Isso significa que mudanças na fonte entre um push e outro **não são capturadas** no histórico. Não tratar o snapshot atual como um histórico confiável até esse gap ser resolvido.
+- **Snapshot roda via Databricks Job** (`job_dbt_olist`), agendado diariamente às 09:00, independente do CI do GitHub Actions. O CI cuida de validar código (push/PR); o Job cuida de manter o histórico de dados atualizado. São mecanismos independentes — nenhum aciona o outro.
 - Incremental models — todos os models são full-refresh (`view` ou `table`)
