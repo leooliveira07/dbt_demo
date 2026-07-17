@@ -1,3 +1,12 @@
+{{ 
+    config(
+        materialized='incremental',
+        unique_key=['order_id', 'order_item_id'],
+        incremental_strategy='merge',
+        on_schema_change='sync_all_columns'
+    ) 
+}}
+
 with order_items as (
     select * from {{ ref('stg_order_items') }}
 ),
@@ -44,3 +53,7 @@ final as (
 )
 
 select * from final
+
+{% if is_incremental() %}
+    where order_purchase_at > (select max(order_purchase_at) from {{ this }})
+{% endif %}
