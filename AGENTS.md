@@ -25,4 +25,5 @@ Dataset Olist (Kaggle), estático. Databricks Free Edition, Unity Catalog. Grão
 ## Pendente (não assumir que já existe)
 
 - **Snapshot roda via Databricks Job** (`job_dbt_olist`), agendado diariamente às 09:00, independente do CI do GitHub Actions. O CI cuida de validar código (push/PR); o Job cuida de manter o histórico de dados atualizado. São mecanismos independentes — nenhum aciona o outro.
-- Incremental models — todos os models são full-refresh (`view` ou `table`)
+- Incremental models — todos os models são full-refresh (`view` ou `table`) exceto `fct_orders`
+- O modelo `fct_orders` é incremental com a estratégia de merge nativa do Databricks
