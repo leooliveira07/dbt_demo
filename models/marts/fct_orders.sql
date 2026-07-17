@@ -1,7 +1,7 @@
 {{ 
     config(
         materialized='incremental',
-        unique_key=['order_id', 'order_item_id'],
+        unique_key='order_id_sk',
         incremental_strategy='merge',
         on_schema_change='sync_all_columns'
     ) 
@@ -22,8 +22,22 @@ payments_summary as (
 reviews_enriched as (
     select * from {{ ref('int_reviews_enriched') }}
 ),
+
+reviews_agg as (
+
+    select
+        order_id,
+        count(*) as review_count,
+        avg(review_score) as avg_review_score,
+        collect_set(sentiment) as distinct_sentiments
+
+    from reviews_enriched
+    group by order_id
+
+),
 final as (
     select
+        {{ dbt_utils.generate_surrogate_key(['order_items.order_id', 'order_items.order_item_id']) }} as order_id_sk,
         order_items.order_id,
         order_items.order_item_id,
         order_items.product_id,
@@ -39,16 +53,16 @@ final as (
         payments_summary.total_paid,
         payments_summary.predominant_payment_type,
         payments_summary.max_installments,
-        reviews_enriched.review_score,
-        reviews_enriched.sentiment
-
+        reviews_agg.review_count,
+        reviews_agg.avg_review_score,
+        reviews_agg.distinct_sentiments
     from order_items
     left join orders_enriched
         on order_items.order_id = orders_enriched.order_id
     left join payments_summary
         on order_items.order_id = payments_summary.order_id
-    left join reviews_enriched
-        on order_items.order_id = reviews_enriched.order_id
+    left join reviews_agg
+        on order_items.order_id = reviews_agg.order_id
 
 )
 

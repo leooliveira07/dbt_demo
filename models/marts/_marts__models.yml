@@ -31,6 +31,11 @@ models:
   - name: fct_orders
     description: "Tabela fato no grão de item de pedido. Uma linha por item dentro de um pedido, com métricas de valor, entrega, pagamento e review."
     columns:
+      - name: order_id_sk
+        description: "Chave surrogate do fato, gerada a partir de order_id + order_item_id via dbt_utils.generate_surrogate_key."
+        tests:
+          - unique
+          - not_null
       - name: order_id
         description: "Identificador do pedido ao qual o item pertence."
         tests:
@@ -64,11 +69,3 @@ models:
         description: "Preço do item, sem frete."
         tests:
           - not_null
-      - name: sentiment
-        description: "Classificação de sentimento derivada da review, quando existente."
-        tests:
-          - accepted_values:
-              arguments:
-                values: ['positive', 'neutral', 'negative']
-              config:
-                where: "sentiment is not null"
