@@ -14,8 +14,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_customers')
-              field: customer_id
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
       - name: order_status
         description: "Status atual do pedido (delivered, shipped, canceled, etc.)."
         tests:
@@ -32,22 +33,25 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_orders')
-              field: order_id
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
       - name: product_id
         description: "Identificador do produto."
         tests:
           - not_null
           - relationships:
-              to: ref('stg_products')
-              field: product_id
+              arguments:
+                to: ref('stg_products')
+                field: product_id
       - name: seller_id
         description: "Identificador do vendedor responsável pelo item."
         tests:
           - not_null
           - relationships:
-              to: ref('stg_sellers')
-              field: seller_id
+              arguments:
+                to: ref('stg_sellers')
+                field: seller_id
       - name: price
         description: "Preço do item, sem frete."
         tests:
@@ -102,8 +106,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_orders')
-              field: order_id
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
       - name: payment_type
         description: "Forma de pagamento utilizada (credit_card, boleto, voucher, etc.)."
         tests:
@@ -125,8 +130,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_orders')
-              field: order_id
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
       - name: review_score
         description: "Nota da avaliação, de 1 a 5."
         tests:
