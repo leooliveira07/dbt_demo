@@ -18,6 +18,8 @@ Contexto para agentes de código atuarem neste projeto dbt. Leia antes de criar 
 
 - **Ingestão é fora do dbt.** Scripts de carga de CSV/raw ficam em `ingestion/`, são SQL puro (sem Jinja), e são executados manualmente — não fazem parte do `dbt build`.
 
+- **Mudança de schema em models incrementais exige atenção especial.** Delta Lake não permite `DROP COLUMN` sem Column Mapping habilitado (`delta.columnMapping.mode = 'name'`, já configurado no `fct_orders`). Se uma mudança de coluna causar erro `DELTA_UNSUPPORTED_DROP_COLUMN` em qualquer ambiente, rode `--full-refresh` nesse ambiente específico — dev e prd têm tabelas físicas independentes, uma mudança de schema aplicada só em dev não se propaga pra prd automaticamente.
+
 ## Contexto do projeto
 
 Dataset Olist (Kaggle), estático. Databricks Free Edition, Unity Catalog. Grão do `fct_orders`: item de pedido (`order_id` + `order_item_id`).

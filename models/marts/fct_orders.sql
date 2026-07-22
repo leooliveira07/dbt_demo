@@ -3,7 +3,8 @@
         materialized='incremental',
         unique_key='order_id_sk',
         incremental_strategy='merge',
-        on_schema_change='sync_all_columns'
+        on_schema_change='sync_all_columns',
+        table_properties={'delta.columnMapping.mode': 'name'}
     ) 
 }}
 
