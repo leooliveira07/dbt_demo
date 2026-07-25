@@ -24,6 +24,15 @@ Contexto para agentes de código atuarem neste projeto dbt. Leia antes de criar 
 
 Dataset Olist (Kaggle), estático. Databricks Free Edition, Unity Catalog. Grão do `fct_orders`: item de pedido (`order_id` + `order_item_id`).
 
+## Conexão MCP
+
+Este projeto tem o `dbt-mcp` conectado ao Claude Code (modo local, via `uvx`), permitindo que o agente consulte lineage, models compilados e execute comandos dbt reais.
+
+- **Configuração**: `DBT_PROJECT_DIR` aponta para a raiz deste repo, `DBT_PATH` para o `dbt` do virtualenv local. `DISABLE_SEMANTIC_LAYER`, `DISABLE_DISCOVERY` e `DISABLE_ADMIN_API` estão setados como `true` — não há conta dbt Platform paga associada a este projeto.
+- **Target padrão do MCP**: o `dbt` usado pelo MCP é o mesmo do venv local, cujo `profiles.yml` tem `target: dev` como default. Comandos executados pelo agente sem `--target` explícito escrevem em `leo_dev`, nunca em `leo` (prd).
+- **Comportamento validado**: ações de execução (`dbt run`, `dbt build`, etc.) pedem confirmação explícita antes de rodar — não são disparadas automaticamente pelo agente.
+- **Nunca** peça ou aceite que o agente rode um comando com `--target prd` numa sessão exploratória. Se uma tarefa realmente exigir isso, trate como uma ação deliberada e única, não como parte de um fluxo automatizado do agente.
+
 ## Pendente (não assumir que já existe)
 
 - **Snapshot roda via Databricks Job** (`job_dbt_olist`), agendado diariamente às 09:00, independente do CI do GitHub Actions. O CI cuida de validar código (push/PR); o Job cuida de manter o histórico de dados atualizado. São mecanismos independentes — nenhum aciona o outro.
