@@ -5,7 +5,7 @@
       "args": ["dbt-mcp"],
       "env": {
         "DBT_PROJECT_DIR": ".",
-        "DBT_PATH": "$./venv/bin/dbt",
+        "DBT_PATH": "./venv/bin/dbt",
         "DISABLE_SEMANTIC_LAYER": "true",
         "DISABLE_DISCOVERY": "true",
         "DISABLE_ADMIN_API": "true"
