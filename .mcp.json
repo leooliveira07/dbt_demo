@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "dbt": {
-      "command": "/Users/leo/.local/bin/uvx",
+      "command": "uvx",
       "args": ["dbt-mcp"],
       "env": {
         "DBT_PROJECT_DIR": ".",
