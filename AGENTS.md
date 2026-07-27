@@ -26,7 +26,14 @@ Dataset Olist (Kaggle), estático. Databricks Free Edition, Unity Catalog. Grão
 
 ## Conexão MCP
 
-Este projeto tem o `dbt-mcp` conectado ao Claude Code (modo local, via `uvx`), permitindo que o agente consulte lineage, models compilados e execute comandos dbt reais.
+Este projeto tem o `dbt-mcp` configurado em escopo `project` (`.mcp.json`, versionado no repo) — qualquer pessoa que clonar o projeto, criar o virtualenv em `venv/` e instalar `dbt-core` + `dbt-databricks` (conforme `README.md`) já tem o servidor disponível automaticamente no Claude Code, sem configuração manual adicional.
+
+- **Configuração**: `DBT_PROJECT_DIR` e `DBT_PATH` usam caminho relativo (`.` e `./venv/bin/dbt`). O caminho relativo simples resolve o mesmo problema sem a complexidade extra. **Requisito**: o Claude Code precisa ser aberto a partir da raiz do repo para esses caminhos resolverem corretamente.
+- **Toolsets desabilitados**: `DISABLE_SEMANTIC_LAYER`, `DISABLE_DISCOVERY` e `DISABLE_ADMIN_API` estão `true` — não há conta dbt Platform paga associada a este projeto, então esses toolsets nunca funcionariam mesmo se habilitados.
+- **Target padrão do MCP**: como `DBT_PATH` aponta pro `dbt` do venv local, e o `profiles.yml` local tem `target: dev`, comandos do agente sem `--target` explícito escrevem em `leo_dev`, nunca em `leo` (prd).
+- **Comportamento de segurança validado**: ações de execução (`dbt run`, `dbt build`, etc.) pedem confirmação explícita antes de rodar — não são disparadas automaticamente pelo agente.
+- **Portabilidade validada**: testado clonando o repo em um diretório separado, com venv novo — o MCP conectou corretamente sem nenhuma configuração manual além do setup padrão do `README.md`.
+- **Nunca** peça ou aceite que o agente rode um comando com `--target prd` numa sessão exploratória. Se uma tarefa realmente exigir isso, trate como uma ação deliberada e única, não como parte de um fluxo automatizado do agente.
 
 - **Configuração**: `DBT_PROJECT_DIR` aponta para a raiz deste repo, `DBT_PATH` para o `dbt` do virtualenv local. `DISABLE_SEMANTIC_LAYER`, `DISABLE_DISCOVERY` e `DISABLE_ADMIN_API` estão setados como `true` — não há conta dbt Platform paga associada a este projeto.
 - **Target padrão do MCP**: o `dbt` usado pelo MCP é o mesmo do venv local, cujo `profiles.yml` tem `target: dev` como default. Comandos executados pelo agente sem `--target` explícito escrevem em `leo_dev`, nunca em `leo` (prd).
